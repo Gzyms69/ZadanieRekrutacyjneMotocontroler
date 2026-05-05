@@ -27,13 +27,15 @@ export const VehicleDetails: React.FC = () => {
         />
         <Input
           label="VIN"
-          placeholder="17 znaków"
+          placeholder="np. WVWZZZ3CZWE123456"
+          maxLength={17}
           error={errors.vin?.message}
           {...register('vin')}
         />
         <Input
           label="Email zgłaszającego (opcjonalnie)"
           type="email"
+          autoComplete="email"
           placeholder="Twoje dane kontaktowe"
           error={errors.email?.message}
           {...register('email')}

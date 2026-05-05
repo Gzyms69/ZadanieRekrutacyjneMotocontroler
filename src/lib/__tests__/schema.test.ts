@@ -68,29 +68,71 @@ describe('DOT validation', () => {
 // ─── Tread Depth Validation ─────────────────────────────
 
 describe('Tread depth validation', () => {
-  it('accepts tread depth of 0', () => {
-    const result = TireSchema.shape.tread_depth.safeParse(0);
+  const validTire = {
+    brand: 'Test', size: '205/55 R16', tread_depth: 5.0, dot: '2417', rating: 4, notes: '',
+  };
+
+  it('accepts tread depth of 0 (completely worn tire)', () => {
+    const result = TireSchema.safeParse({ ...validTire, tread_depth: 0 });
     expect(result.success).toBe(true);
   });
 
   it('accepts tread depth of 20', () => {
-    const result = TireSchema.shape.tread_depth.safeParse(20);
+    const result = TireSchema.safeParse({ ...validTire, tread_depth: 20 });
     expect(result.success).toBe(true);
   });
 
   it('rejects negative tread depth', () => {
-    const result = TireSchema.shape.tread_depth.safeParse(-1);
+    const result = TireSchema.safeParse({ ...validTire, tread_depth: -1 });
     expect(result.success).toBe(false);
   });
 
   it('rejects tread depth above 20', () => {
-    const result = TireSchema.shape.tread_depth.safeParse(21);
+    const result = TireSchema.safeParse({ ...validTire, tread_depth: 21 });
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects empty string for tread depth', () => {
+    const result = TireSchema.safeParse({ ...validTire, tread_depth: '' });
     expect(result.success).toBe(false);
   });
 
   it('uses correct business threshold for warnings', () => {
     // The soft warning threshold should be 1.6mm
     expect(CONSTANTS.MIN_TREAD_WARNING).toBe(1.6);
+  });
+});
+
+// ─── Rating Validation ──────────────────────────────────
+
+describe('Rating validation', () => {
+  const validTire = {
+    brand: 'Test', size: '205/55 R16', tread_depth: 5.0, dot: '2417', rating: 4, notes: '',
+  };
+
+  it('rejects empty string for rating', () => {
+    const result = TireSchema.safeParse({ ...validTire, rating: '' });
+    expect(result.success).toBe(false);
+  });
+
+  it('accepts rating of 1', () => {
+    const result = TireSchema.safeParse({ ...validTire, rating: 1 });
+    expect(result.success).toBe(true);
+  });
+
+  it('accepts rating of 5', () => {
+    const result = TireSchema.safeParse({ ...validTire, rating: 5 });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects rating of 0', () => {
+    const result = TireSchema.safeParse({ ...validTire, rating: 0 });
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects rating of 6', () => {
+    const result = TireSchema.safeParse({ ...validTire, rating: 6 });
+    expect(result.success).toBe(false);
   });
 });
 

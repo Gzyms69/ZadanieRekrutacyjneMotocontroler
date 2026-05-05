@@ -26,6 +26,7 @@ export const Accordion: React.FC<AccordionProps> = ({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
         className="flex items-center justify-between w-full p-4 text-left font-bold text-gray-800 bg-gray-50/50 hover:bg-gray-100/50 transition-colors"
       >
         <span>{title}</span>

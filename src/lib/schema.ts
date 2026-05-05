@@ -8,12 +8,19 @@ import { CONSTANTS } from './constants';
 export const TireSchema = z.object({
   brand: z.string().min(1, 'Marka opony jest wymagana'),
   size: z.string().min(1, 'Rozmiar opony jest wymagany'),
-  tread_depth: z.coerce
-    .number()
-    .min(0, 'Głębokość nie może być ujemna')
-    .max(20, 'Głębokość wydaje się nieprawidłowa'),
+  tread_depth: z.preprocess(
+    (val) => (val === '' || val === undefined ? undefined : Number(val)),
+    z.number({ required_error: 'Głębokość bieżnika jest wymagana' })
+      .min(0, 'Głębokość nie może być ujemna')
+      .max(20, 'Głębokość wydaje się nieprawidłowa')
+  ),
   dot: z.string().regex(CONSTANTS.DOT_REGEX, 'Nieprawidłowy format DOT (WWYY)'),
-  rating: z.coerce.number().min(1).max(5),
+  rating: z.preprocess(
+    (val) => (val === '' || val === undefined ? undefined : Number(val)),
+    z.number({ required_error: 'Ocena jest wymagana' })
+      .min(1, 'Ocena musi być od 1 do 5')
+      .max(5, 'Ocena musi być od 1 do 5')
+  ),
   notes: z.string().optional(),
 });
 

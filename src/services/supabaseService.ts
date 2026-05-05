@@ -12,7 +12,7 @@ export const supabaseService = {
   async saveReport(data: ReportFormData) {
     const { error } = await supabase
       .from('reports')
-      .insert([data]);
+      .insert(data);
 
     if (error) {
       console.error('Błąd zapisu w Supabase:', error);

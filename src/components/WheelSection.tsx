@@ -68,18 +68,36 @@ export const WheelSection: React.FC<WheelSectionProps> = ({ position }) => {
         <Input
           label="Kod DOT"
           placeholder="WWYY (np. 2417)"
+          inputMode="numeric"
+          maxLength={4}
           error={wheelErrors?.dot?.message}
           {...register(`${namePrefix}.dot`)}
         />
-        <Input
-          label="Ocena (1-5)"
-          type="number"
-          min="1"
-          max="5"
-          placeholder="1-5"
-          error={wheelErrors?.rating?.message}
-          {...register(`${namePrefix}.rating`)}
-        />
+        <div className="flex flex-col gap-1.5 w-full">
+          <label htmlFor={`${namePrefix}-rating`} className="text-sm font-semibold text-gray-700 ml-1">
+            Ocena (1-5)
+          </label>
+          <select
+            id={`${namePrefix}-rating`}
+            aria-invalid={!!wheelErrors?.rating}
+            aria-describedby={wheelErrors?.rating?.message ? `${namePrefix}-rating-error` : undefined}
+            className="flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition-all disabled:cursor-not-allowed disabled:opacity-50"
+            defaultValue=""
+            {...register(`${namePrefix}.rating`)}
+          >
+            <option value="" disabled>Wybierz ocenę...</option>
+            <option value="1">1 - Zła</option>
+            <option value="2">2 - Słaba</option>
+            <option value="3">3 - Średnia</option>
+            <option value="4">4 - Dobra</option>
+            <option value="5">5 - Bardzo dobra</option>
+          </select>
+          {wheelErrors?.rating?.message && (
+            <span id={`${namePrefix}-rating-error`} className="text-xs text-red-500 font-medium ml-1" role="alert">
+              {wheelErrors.rating.message}
+            </span>
+          )}
+        </div>
         <Input
           label="Uwagi (opcjonalnie)"
           placeholder="Dodatkowe informacje..."

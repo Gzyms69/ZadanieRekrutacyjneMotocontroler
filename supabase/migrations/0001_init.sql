@@ -19,13 +19,17 @@ GRANT INSERT ON TABLE public.reports TO anon;
 CREATE POLICY "Zezwól na INSERT dla anon" ON public.reports FOR INSERT TO anon WITH CHECK (true);
 
 -- 5. Ochrona integralności JSONB (CHECK constraint)
--- Sprawdza czy wheels_data jest obiektem i zawiera klucze dla wszystkich 4 kół
+-- Weryfikuje: obiekt główny, 4 klucze kół, każde koło jest obiektem z wymaganymi polami
 ALTER TABLE public.reports
 ADD CONSTRAINT check_wheels_data_structure
 CHECK (
   jsonb_typeof(wheels_data) = 'object'
-  AND wheels_data ? 'FL'
-  AND wheels_data ? 'FR'
-  AND wheels_data ? 'RL'
-  AND wheels_data ? 'RR'
+  AND jsonb_typeof(wheels_data -> 'FL') = 'object'
+  AND jsonb_typeof(wheels_data -> 'FR') = 'object'
+  AND jsonb_typeof(wheels_data -> 'RL') = 'object'
+  AND jsonb_typeof(wheels_data -> 'RR') = 'object'
+  AND wheels_data -> 'FL' ?& array['brand', 'size', 'tread_depth', 'dot', 'rating']
+  AND wheels_data -> 'FR' ?& array['brand', 'size', 'tread_depth', 'dot', 'rating']
+  AND wheels_data -> 'RL' ?& array['brand', 'size', 'tread_depth', 'dot', 'rating']
+  AND wheels_data -> 'RR' ?& array['brand', 'size', 'tread_depth', 'dot', 'rating']
 );
